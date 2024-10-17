@@ -1,0 +1,718 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "model": "gpt-4o-mini",
+        "options": {}
+      },
+      "id": "bc798569-1a50-4856-ae0d-00c536602120",
+      "name": "OpenAI Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1,
+      "position": [
+        740,
+        760
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "ly5HYOOy5broUHxw",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('When chat message received').item.json.sessionId }}"
+      },
+      "id": "f8427486-49c7-4124-9d00-1da92057c5c1",
+      "name": "Window Buffer Memory",
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.2,
+      "position": [
+        880,
+        760
+      ]
+    },
+    {
+      "parameters": {
+        "model": "gpt-4o-mini",
+        "options": {}
+      },
+      "id": "b7f2c4b0-97cf-4b05-bab6-39362e5c063d",
+      "name": "OpenAI Chat Model1",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1,
+      "position": [
+        1620,
+        1000
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "ly5HYOOy5broUHxw",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "queryString": "={{ $json.query.query }}",
+        "limit": 1,
+        "filter": {},
+        "options": {}
+      },
+      "id": "18f2cbd9-b893-4e25-a8d8-c3917f376d83",
+      "name": "Google Drive",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -460,
+        1360
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "E46nQiGw7vNss3RN",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "options": {
+          "binaryPropertyName": "data",
+          "googleFileConversion": {
+            "conversion": {
+              "docsToFormat": "text/plain"
+            }
+          }
+        }
+      },
+      "id": "2cf8e98c-2460-4543-8c8f-4345a9a2a640",
+      "name": "Get File Content",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -280,
+        1360
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "E46nQiGw7vNss3RN",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "dataType": "binary",
+        "options": {}
+      },
+      "id": "83b89d00-91ef-44ac-a4ad-06cee8b2d0ac",
+      "name": "Default Data Loader",
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1,
+      "position": [
+        780,
+        1200
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "70feb9ca-c7cf-4628-bb41-596e399d0569",
+      "name": "Character Text Splitter",
+      "type": "@n8n/n8n-nodes-langchain.textSplitterCharacterTextSplitter",
+      "typeVersion": 1,
+      "position": [
+        1040,
+        1340
+      ]
+    },
+    {
+      "parameters": {
+        "model": "text-embedding-3-large",
+        "options": {}
+      },
+      "id": "412ca01d-8e4c-4a88-a4d8-e77273a02aaf",
+      "name": "Embeddings OpenAI1",
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1,
+      "position": [
+        560,
+        1220
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "ly5HYOOy5broUHxw",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "text-embedding-3-large",
+        "options": {}
+      },
+      "id": "568ff0a8-e065-4b42-a9f4-d528ddf458fe",
+      "name": "Embeddings OpenAI",
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1,
+      "position": [
+        1440,
+        1080
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "ly5HYOOy5broUHxw",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "name": "add_doc_to_vector_db",
+        "description": "Use this to search for a file in Google Drive, download it, and add it to the vector DB knowledgebase for future querying.",
+        "workflowId": "DG9U9eJhb8TOEZrG",
+        "responsePropertyName": "metadata",
+        "specifyInputSchema": true,
+        "jsonSchemaExample": "{\n\t\"query\": \"Meeting notes from last week\"\n}"
+      },
+      "id": "a5c3e9ea-3859-4c9e-9c98-d4517a6253fb",
+      "name": "Add Google Drive File to Vector DB",
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 1.1,
+      "position": [
+        1240,
+        860
+      ]
+    },
+    {
+      "parameters": {
+        "name": "user_documents",
+        "description": "Contains all the user's documents that you can check for context to answer user questions."
+      },
+      "id": "a42ce961-16f0-405f-b813-08afe237025e",
+      "name": "Retrieve Documents",
+      "type": "@n8n/n8n-nodes-langchain.toolVectorStore",
+      "typeVersion": 1,
+      "position": [
+        1440,
+        860
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Agent Tools for RAG",
+        "height": 528.85546469693,
+        "width": 583.4552380860637,
+        "color": 4
+      },
+      "id": "c1c77477-7d0f-494c-9c27-28df2094e17b",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1160,
+        680
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Tool to Add a Google Drive File to Vector DB",
+        "height": 999.216211734484,
+        "width": 1952.4062906309182,
+        "color": 5
+      },
+      "id": "7af1c9d9-8b68-4e77-b92f-485d643c58bf",
+      "name": "Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -707.0270042942141,
+        920
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## RAG AI Agent with Chat Interface",
+        "height": 464.8027193303974,
+        "width": 692.7866482806627
+      },
+      "id": "5389a5c3-f9e0-4a26-bd85-23c8bbea8ed4",
+      "name": "Sticky Note2",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        460,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('When chat message received').item.json.chatInput }}",
+        "options": {
+          "systemMessage": "You are a personal assistant who helps answer questions from a corpus of documents when you don't know the answer yourself."
+        }
+      },
+      "id": "050a4ba4-b2a8-4174-bf91-5fa226dec06c",
+      "name": "RAG AI Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.6,
+      "position": [
+        840,
+        540
+      ]
+    },
+    {
+      "parameters": {
+        "memoryKey": "user_documents"
+      },
+      "id": "ede1a616-9153-430f-9f79-1ade50681322",
+      "name": "In-Memory Vector Store",
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreInMemory",
+      "typeVersion": 1,
+      "position": [
+        1340,
+        980
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "memoryKey": "=user_documents"
+      },
+      "id": "e93a5c07-65ab-41e5-92ef-dc79d765db22",
+      "name": "In-Memory Vector Store Inserter",
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreInMemory",
+      "typeVersion": 1,
+      "position": [
+        640,
+        1000
+      ]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "add_doc_to_vector_db",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "5730ffd2-39b3-4aff-b578-7766bed544f0",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -680,
+        1360
+      ],
+      "webhookId": "8ea31a69-552f-445a-9584-47b869da88fd"
+    },
+    {
+      "parameters": {
+        "operation": "text",
+        "options": {}
+      },
+      "id": "f5c3423c-e738-461b-99d7-78be2e65f23a",
+      "name": "Extract from File",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        440,
+        1000
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const fileExtension = items[0].json.fileExtension; // \"txt\"\nconst mimeType = items[0].json.mimeType; // \"text/plain\"\nconst fileData = items[0].binary.data; // The binary data of the file\n\n// Create the base output object\nconst response = {\n    fileType: 'Unknown',\n    data: fileData, // Return the whole binary data\n};\n\n// Determine the file type\nif (fileExtension === 'pdf' || mimeType === 'application/pdf') {\n    response.fileType = 'PDF';\n} else if (fileExtension === 'txt' || mimeType === 'text/plain') {\n    response.fileType = 'Text';\n}\n\n// Return the response including the binary data\nreturn [{ \n    json: { \n        fileType: response.fileType \n    }, \n    binary: { \n        data: response.data // Include the binary data here\n    } \n}];\n"
+      },
+      "id": "b53fc7c9-a651-4c62-bc49-165d50b3bfe5",
+      "name": "Code",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -80,
+        1360
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "152725b7-d84e-4e6e-b990-a963d1486b8a",
+              "leftValue": "=json.fileType",
+              "rightValue": "Unknown",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "0fb81f29-b098-4909-aaaa-23c057612fb7",
+      "name": "If",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        120,
+        1360
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "88a3c27b-780f-49cb-ac7c-fa79c44e759c",
+      "name": "Embeddings OpenAI2",
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1,
+      "position": [
+        420,
+        1800
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "ly5HYOOy5broUHxw",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "b4a3be34-52b0-46c4-942a-781d0776c1bd",
+      "name": "Default Data Loader1",
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1,
+      "position": [
+        1000,
+        1620
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "dd453ee4-d7bd-4a58-85c3-da3b4568dd2b",
+      "name": "Character Text Splitter1",
+      "type": "@n8n/n8n-nodes-langchain.textSplitterCharacterTextSplitter",
+      "typeVersion": 1,
+      "position": [
+        1080,
+        1780
+      ]
+    },
+    {
+      "parameters": {
+        "public": true,
+        "options": {}
+      },
+      "id": "89ef7763-ec5b-41a9-a6ac-f26561e368b2",
+      "name": "When chat message received",
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        520,
+        540
+      ],
+      "webhookId": "057f6fe7-e865-42b6-9020-8cc759271eb9"
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "memoryKey": "=user_documents"
+      },
+      "id": "0f00a954-0791-48bd-b6e7-30c52903045c",
+      "name": "In-Memory Vector Store Inserter1",
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreInMemory",
+      "typeVersion": 1,
+      "position": [
+        540,
+        1560
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "binaryToPropery",
+        "options": {}
+      },
+      "id": "0d9e7000-d809-4da6-a796-bd0e9aa0dbd2",
+      "name": "Extract from File1",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        340,
+        1560
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "RAG AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Window Buffer Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "RAG AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Retrieve Documents",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive": {
+      "main": [
+        [
+          {
+            "node": "Get File Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get File Content": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Default Data Loader": {
+      "ai_document": [
+        [
+          {
+            "node": "In-Memory Vector Store Inserter",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Character Text Splitter": {
+      "ai_textSplitter": [
+        [
+          {
+            "node": "Default Data Loader",
+            "type": "ai_textSplitter",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI1": {
+      "ai_embedding": [
+        [
+          {
+            "node": "In-Memory Vector Store Inserter",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI": {
+      "ai_embedding": [
+        [
+          {
+            "node": "In-Memory Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add Google Drive File to Vector DB": {
+      "ai_tool": [
+        [
+          {
+            "node": "RAG AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Retrieve Documents": {
+      "ai_tool": [
+        [
+          {
+            "node": "RAG AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "In-Memory Vector Store": {
+      "ai_vectorStore": [
+        [
+          {
+            "node": "Retrieve Documents",
+            "type": "ai_vectorStore",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Google Drive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "In-Memory Vector Store Inserter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Extract from File1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI2": {
+      "ai_embedding": [
+        [
+          {
+            "node": "In-Memory Vector Store Inserter1",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Default Data Loader1": {
+      "ai_document": [
+        [
+          {
+            "node": "In-Memory Vector Store Inserter1",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Character Text Splitter1": {
+      "ai_textSplitter": [
+        [
+          {
+            "node": "Default Data Loader1",
+            "type": "ai_textSplitter",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "RAG AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File1": {
+      "main": [
+        [
+          {
+            "node": "In-Memory Vector Store Inserter1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "9cf1fb53-2346-4768-b6ba-d1a526e26659",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "558d88703fb65b2d0e44613bc35916258b0f0bf983c5d4730c00c424b77ca36a"
+  },
+  "id": "baSMcVSclcWxVLfu",
+  "tags": []
+}
